@@ -1,17 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Homepage from "./pages/Homepage";
+import { borderbox, header_style } from "./styles";
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <div>
+        <HeaderBox />
+        <Homepage />
+      </div>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+function HeaderBox() {
+  return (
+    <div style={borderbox}>
+      <h1 style={header_style}><span style={{"color":"#CA0101"}}>Cata</span><span style={{"color":"green"}}>List</span></h1>
+    </div>
+  );
+}
+
 reportWebVitals();
