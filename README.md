@@ -2,7 +2,7 @@
 # Catalist
 A web application that enables collaborative list sharing, viewing and editing for events rsvp list, shopping lists, etc
 
-Check it out here - https://www.cookiebush.com/view/76036
+Check it out here - https://www.catalist.in (you might need a quick one time sign up)
 
 ## Demo
 
