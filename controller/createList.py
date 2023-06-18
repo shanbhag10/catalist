@@ -31,7 +31,7 @@ def lambda_handler(event, context):
             ConditionExpression='attribute_not_exists(listId)'
         )
     except:
-        ret = {"errorReason" : "LIST_ID_EXISTS"}
+        ret = {"errorReason" : "LIST_ID_ALREADY_EXISTS"}
         return {
             'statusCode': 400,
             'body': json.dumps(ret),
