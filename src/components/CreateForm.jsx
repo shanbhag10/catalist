@@ -28,7 +28,7 @@ class CreateForm extends Component {
         let json = JSON.parse(response);
         console.log(json["listId"]);
         this.setState({listId:json["listId"]});
-        alert('Your list code is ' + this.state.listId);
+        alert('Your new list code is ' + this.state.listId);
         this.props.navigate('/view/' + this.state.listId);
     }
 
