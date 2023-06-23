@@ -1,0 +1,30 @@
+name: deploy to lambda
+on: [push]
+jobs:
+  deploy_source:
+    name: build and deploy lambdas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: true
+      - name: createList-zip
+        uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./createList.zip ./controller/createList.py
+      - name: default deploy
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-west-1
+          function_name: createList
+          zip_file: createList.zip

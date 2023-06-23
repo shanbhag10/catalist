@@ -24,10 +24,13 @@ const CreateForm = (props) => {
         return json.body
     }
 
-    const createList = async () => {
-        const response = await createListAsync();
-        console.log(response);
-        props.navigate('/view/' + listId);
+    createList = async () => {
+        const response = await this.createListAsync();
+        let json = JSON.parse(response);
+        console.log(json["listId"]);
+        this.setState({listId:json["listId"]});
+        alert('Your new list code is ' + this.state.listId);
+        this.props.navigate('/view/' + this.state.listId);
     }
 
     const handleListIdChange = event => {
