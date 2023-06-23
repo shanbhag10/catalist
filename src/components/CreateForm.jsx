@@ -24,7 +24,7 @@ const CreateForm = (props) => {
         return json.body
     }
 
-    createList = async () => {
+    const createList = async () => {
         const response = await this.createListAsync();
         let json = JSON.parse(response);
         console.log(json["listId"]);

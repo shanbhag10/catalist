@@ -95,7 +95,7 @@ const HomeView = (props) => {
             </div>
         );
     }
-    
+
     return (isLoading ? <Loader/> : <Page/>)
 }
 
