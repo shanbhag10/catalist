@@ -1,6 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import Item from "./Item";
-import { submitButton } from "../styles"
+import { clearButton, submitButton, tinyButton } from "../styles"
+import { useEffect, useState } from "react";
+import { topMargin } from "../styles"
+import Menu from "./Menu";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import Loader from "./Loader";
 
 const boxDiv = {
   margin: "20px 12px 10px 10px",
@@ -11,131 +16,157 @@ const box = {
   alignItems: "center"
 }
 
-class List extends Component {
-    constructor(props) {
-        super(props);
+const List = (props) => {
+    const listId = props.listId;
+    const [newItemName, setNewItemName] = useState("");
+    const [description, setDescription] = useState("");
+    const [listType, setListType] = useState("");
+    const [createdBy, setCreatedBy] = useState("");
+    const [items, setItems] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     
-        this.state = {
-          listId: this.props.listId,
-          items: [],
-          name: "",
-          description: "",
-          newItemName: ""
-        };
+    useEffect( () =>
+        { 
+            setIsLoading(true);
+            async function fetchData() {
+                const showListAsync = async () => {
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ listId: listId, username: localStorage.getItem('username') })
+                    };
+                
+                    const response = await fetch('https://0xo69ga71b.execute-api.us-west-1.amazonaws.com/dev/show', requestOptions);
+                    const json = await response.json();
+                    return json.body
+                }
+
+                const response = await showListAsync();
+                let json = JSON.parse(response);
+            
+                let currentItems = [];
+                for (let i = 0; i < json.length; i++) {
+                    let jsonItem = json[i];
+                    if (jsonItem["isList"]) {
+                        setDescription(jsonItem["description"]);
+                        setListType(jsonItem["listType"]);
+                        setCreatedBy(jsonItem["createdBy"]);
+                    } else {
+                        let item = {"name": jsonItem["name"], "id": jsonItem["uuid"]};
+                        currentItems.push(item);
+                    }
+                } 
+            
+                setItems(currentItems);
+                setIsLoading(false);
+            }
+            fetchData();
+    }, [listId])
+
+    const handleItemNameChange = event => {
+        setNewItemName(event.target.value)
     }
 
-    componentDidMount() {
-      this.showList();
-    }
-
-    showListAsync = async () => {
+    const handleDelete = (itemId) => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ listId: this.state.listId })
+            body: JSON.stringify({ "itemId" : itemId, "listId" : listId })
         };
-        const response = await fetch('https://0xo69ga71b.execute-api.us-west-1.amazonaws.com/dev/show', requestOptions);
-        const json = await response.json();
-        return json.body
-    }
-
-    showList = async () => {
-        const response = await this.showListAsync();
-        let json = JSON.parse(response);
-        console.log(json);
-
-        let name = "";
-        let description = "";
-        let items = [];
-        for (let i = 0; i < json.length; i++) {
-          let jsonItem = json[i];
-          if (jsonItem["isList"]) {
-            name = jsonItem["name"];
-            description = jsonItem["description"];
-          } else {
-            let item = {"name": jsonItem["name"], "id": jsonItem["uuid"]};
-            items.push(item);
-          }
-        } 
-
-        this.setState({
-          listId: this.props.listId,
-          items: items,
-          name: name,
-          description: description,
-          newItemName: this.state.newItemName
-        })
-    }
-
-    addToList = async () => {
-      const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ listId: this.state.listId, name: this.state.newItemName })
-      };
       
-      fetch('https://0xo69ga71b.execute-api.us-west-1.amazonaws.com/dev/add', requestOptions);
-
-      let current = this.state;
-      current.items.push({"name": this.state.newItemName, "id": this.state.newItemName})
-      current.newItemName = ""
-      this.setState(current);
-    }
-
-    handleItemNameChange = event => {
-      let current = this.state;
-      current.newItemName = event.target.value
-      this.setState(current);
-    }
-
-    handleDelete = (itemId, listId) => {
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ "itemId" : itemId, "listId" : listId })
-      };
+        fetch('https://0xo69ga71b.execute-api.us-west-1.amazonaws.com/dev/delete', requestOptions);
     
-      fetch('https://0xo69ga71b.execute-api.us-west-1.amazonaws.com/dev/delete', requestOptions);
-
-      const items = this.state.items.filter((item) => item.id !== itemId);
-      this.setState({ items: items });
+        const filtered = items.filter((item) => item.id !== itemId);
+        setItems(filtered)
     };
 
-    renderList() {
-      return (
-        <div>
-          <div>
-            {this.state.items.map((item) => (
-              <Item
-                key={item.id}
-                item={item}
-                listId={this.state.listId}
-                onDelete={this.handleDelete}
-              />
-            ))}
-          </div>
-          <div>
-            <div style={boxDiv}>
-              <input style={box} type="text" name="name" value={this.state.newItemName} onChange={this.handleItemNameChange}/>
-            </div>
-            
-            <div>
-              <button style={submitButton} onClick={this.addToList}>Add Item</button>  
-            </div>
-          </div>
-        </div>
-      );
+    const getDescription = () => {
+        if (description !== null && description !== "") {
+            return <p style={{marginTop: "2px", fontSize: "12px"}}>{description}</p>
+        }
+        return <div></div>
     }
 
-    render() {
+    const addToList = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ listId: listId, name: newItemName })
+        };
+        
+        fetch('https://0xo69ga71b.execute-api.us-west-1.amazonaws.com/dev/add', requestOptions);
+    
+        let current = items;
+        current.push({"name": newItemName, "id": newItemName})
+        setItems(current)
+        setNewItemName("")
+    }
+
+    const clearButton1 = {
+        ...clearButton,
+        fontSize: "22px",
+        color: "rgb(200, 200, 200)",
+        marginLeft: '10px'
+    }
+
+    const url = "https://www.catalist.in/view/" + listId.replaceAll(" ", "%20")
+
+    const TopPage = () => {
         return (
-          <div>
-            <h3>{this.state.name} (<span style={{color:"green"}}>{this.state.listId})</span></h3>
-            <p style={{padding: "5px"}}>{this.state.description}</p>
-            {this.renderList()}
-          </div>
+            <div>
+                <Menu navigate={props.navigate} selected="view_button"/>
+                <h2 style={{ ...topMargin, marginLeft: "7%"}}>
+                    Name : <span style={{color:"green"}}>{listId}</span>
+                
+                    <CopyToClipboard text={url}
+                    onCopy={() => alert("List link copied to clipboard! You can now share it. :D")}>
+                    <button style={tinyButton}>
+                        Share
+                    </button>
+                    </CopyToClipboard>
+                </h2>
+                {getDescription()} 
+                <h5>
+                    Created By : <span style={{color:"green"}}>{createdBy}</span>
+                    <span style={{marginLeft:"10%"}}></span>
+                    Type : <span style={{color:"green"}}>{listType}</span>
+                </h5>
+            </div>
         );
     }
+
+    const ItemsPage = () => {
+        return (
+            <div>
+                <div>
+                    { items.map((item) => (
+                        <Item
+                        key={item.id}
+                        item={item}
+                        listId={listId}
+                        onDelete={handleDelete}
+                        />
+                    ))}
+                </div>
+                <div>
+                    <div style={boxDiv}>
+                        <input style={{ ...box, margin: "5.5%", width : "85%"}} type="text" name="name" value={newItemName} onChange={handleItemNameChange}/>
+                    </div>
+                    
+                    <div>
+                        <button style={submitButton} onClick={addToList}>Add Item</button>  
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div>
+            <TopPage/>
+            {isLoading ? <Loader/> : <ItemsPage/>}
+        </div>
+    )
 }
 
 export default List;

@@ -1,10 +1,11 @@
 export const borderbox = {
     backgroundColor: "white",
     margin: "5%",
-    boxShadow: "0 1px 1px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24)",
+    //boxShadow: "0 1px 1px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24)",
     textAlign: "center",
     borderRadius: "5px",
-    width: "90%"
+    width: "90%",
+    border: "rgb(220, 220, 220) solid 2px",
 }
 
 export const center = {
@@ -15,20 +16,21 @@ export const center = {
 export const header_style = {
     textAlign: "center",
     fontSize: "30px",
-    fontFamily: "Monaco",
-    paddingTop: "10px",
-    paddingBottom: "10px",
+    fontFamily: "Courier",
+    borderRadius: "5px",
+    padding: "0px"
 }
 
 export const toggles = {
     color: "black",
-    width: "45%",
-    border: "rgb(231, 231, 231) solid 2px",
+    width: "28%",
+    border: "solid 2px",
     fontSize: "20px",
     paddingTop: "15px",
     paddingBottom: "15px",
     borderRadius: "5px",
-    margin: "10px 6px 5px 6px"
+    margin: "10px 6px 5px 6px",
+    backgroundColor: "rgb(240, 240, 240)"
 }
 
 export const links = {
@@ -38,7 +40,8 @@ export const links = {
 
 export const label = {
     fontWeight: "bold",
-    paddingBottom: "10px"
+    paddingBottom: "10px",
+    marginBottom: "10px"
 }
 
 export const submitButton = {
@@ -55,9 +58,17 @@ export const submitButton = {
     marginBottom: "20px"
 }
 
+export const tinyButton = {
+    marginLeft:"20px", 
+    fontWeight:"bold",
+    borderRadius:"5px",
+    padding: "5px 15px"
+}
+
 export const topMargin = {
     marginTop: "10px",
-    marginBottom: "20px"
+    marginBottom: "10px", 
+    paddingTop: "15px"
 }
 
 export const bottomMargin = {
@@ -78,8 +89,8 @@ export const right = {
 export const label1 = {
     ...label,
     ...left,
-    paddingTop: "5px",
-    paddingLeft: "100px",
+    paddingTop: "17px",
+    paddingLeft: "25%",
     width: "inherit"
 }
 
@@ -88,3 +99,13 @@ export const right1 = {
     width: "70px",
     marginLegt: "0px"
 }
+
+export const clearButton = {
+    border: "hidden",
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+    fontSize: "small",
+    fontWeight: "bold",
+    color: "green",
+    backgroundColor: "white"
+};
+

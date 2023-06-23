@@ -1,9 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 
-class Item extends Component {
-  state = {};
-
-  cross = {
+const Item = (props) => {
+  const cross = {
     fontSize: 18,
     color: "white",
     backgroundColor: "#CA0101",
@@ -12,43 +10,30 @@ class Item extends Component {
     float: "right"
   };
 
-  itemStyle = {
+  const itemStyle = {
     padding: "10px",
-    margin: "10px 20px",
-    backgroundColor: "rgb(231, 231, 231)"
+    margin: "10px 30px",
+    backgroundColor: "rgb(240, 240, 240)",
+    borderRadius: "5px",
+    border: "rgb(220, 220, 220) solid 1px"
   };
 
-  getBadgeClasses() {
-    let classes = "badge m-2 ";
-    classes += this.props.item.count === 0 ? "badge-warning" : "badge-primary";
-    return classes;
-  }
-
-  renderName() {
-    let name = this.props.item.name ? this.props.item.name : "No Name";
-    return (
-      <span style={{fontSize: 18}}>
-        <b>{name}</b>
-      </span>
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        <div style={this.itemStyle}>
-          {this.renderName()}
-          <button
-            style={this.cross}
-            className="btn btn-danger m-2"
-            onClick={() => this.props.onDelete(this.props.item.id, this.props.listId)}
-          >
-            X
-          </button>
-        </div>
+  return (
+    <div>
+      <div style={itemStyle}>
+        <span style={{fontSize: 18}}>
+          <b>{props.item.name}</b>
+        </span>
+        <button
+          style={cross}
+          className="btn btn-danger m-2"
+          onClick={() => props.onDelete(props.item.id)}
+        >
+          X
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Item;

@@ -2,26 +2,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Homepage from "./pages/Homepage";
 import { borderbox, header_style } from "./styles";
 import { BrowserRouter } from 'react-router-dom';
+import { CookiesProvider } from "react-cookie";
+import LandingPage from './pages/LandingPage';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <div>
-        <HeaderBox />
-        <Homepage />
-      </div>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <CookiesProvider>
+    <React.StrictMode>
+      <BrowserRouter>
+        <div>
+          <HeaderBox />
+          <LandingPage />
+        </div>
+      </BrowserRouter>
+    </React.StrictMode>
+  </CookiesProvider>,
   document.getElementById('root')
 );
 
 function HeaderBox() {
   return (
     <div style={borderbox}>
-      <h1 style={header_style}><span style={{"color":"#CA0101"}}>Cata</span><span style={{"color":"green"}}>List</span></h1>
+      <h1 style={header_style}><span style={{"color":"black"}}>CATA</span><span style={{"color":"green"}}>LIST</span></h1>
     </div>
   );
 }
